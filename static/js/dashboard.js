@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const todayStr = now.toLocaleDateString('en-US');
             if (localStorage.getItem('lastAutoDownload') !== todayStr) {
                 localStorage.setItem('lastAutoDownload', todayStr);
-                fetch('/api/get_order_history')
+               fetch('https://yasonasser-dashboard.hf.space/api/get_order_history')
                     .then(response => response.json())
                     .then(data => {
                         let csv = 'Order ID,Customer Name,Order Type,Items Details,Time,Amount,Status\n';
@@ -123,7 +123,7 @@ async function fetchOrdersFromDB() {
     if (isUpdating) return; 
     const fetchStartTime = Date.now(); 
     try {
-        const response = await fetch(`/api/get_active_orders?t=${new Date().getTime()}`);
+        const response = await fetch(`https://yasonasser-dashboard.hf.space/api/get_active_orders?t=${new Date().getTime()}`);
         const data = await response.json();
         if (isUpdating || lastActionTime > fetchStartTime) return; 
         
@@ -145,7 +145,7 @@ async function fetchOrdersFromDB() {
 
 async function fetchMenuFromDB() {
     try {
-        const response = await fetch('/api/get_menu');
+        const response = await fetch('https://yasonasser-dashboard.hf.space/api/get_menu');
         const data = await response.json();
         fullMenu = data.menu || [];
     } catch (e) { console.error("Error fetching menu:", e); }
@@ -153,7 +153,7 @@ async function fetchMenuFromDB() {
 
 async function updateStats() {
     try {
-        const response = await fetch(`/api/dashboard-stats?t=${new Date().getTime()}`);
+        const response = await fetch(`https://yasonasser-dashboard.hf.space/api/dashboard-stats?t=${new Date().getTime()}`);
         const stats = await response.json();
         const ids = {new:'count-new', preparing:'count-preparing', ready:'count-ready', payment:'count-payment', completed:'count-completed'};
         for(const [status, id] of Object.entries(ids)) {
@@ -335,7 +335,7 @@ function updateStatus(id, newStatus) {
         updateStats(); 
     }
 
-    fetch('/api/update_order_status', { 
+    fetch('https://yasonasser-dashboard.hf.space/api/update_order_status', { 
         method: 'POST', headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify({ id: id, status: newStatus }) 
     })
