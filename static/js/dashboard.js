@@ -484,7 +484,7 @@ function updateStatusWithPayment(id, newStatus, discount, finalTotal) {
         orders[orderIndex].total = finalTotal;
         renderOrders(); updateStats();
     }
-    fetch('/api/update_order_status', { 
+    fetch('https://yasonasser-dashboard.hf.space/api/update_order_status', { 
         method: 'POST', headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify({ id: id, status: newStatus, discount: discount, finalTotal: finalTotal }) 
     }).then(() => { setTimeout(() => { isUpdating = false; fetchOrdersFromDB(); updateStats(); }, 600); })
@@ -521,7 +521,7 @@ function processConfirmation() {
         setTimeout(() => { printKitchenReceipt(orders[orderIndex]); }, 500);
     }
     
-    fetch('/api/update_order_status', { 
+    fetch('https://yasonasser-dashboard.hf.space/api/update_order_status', { 
         method: 'POST', headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify({ id: idToUpdate, status: 'preparing', prepTime: prepTime }) 
     }).then(() => { setTimeout(() => { isUpdating = false; fetchOrdersFromDB(); updateStats(); }, 600); })
@@ -684,7 +684,7 @@ function saveOrderEdit() {
 
     isUpdating = true; lastActionTime = Date.now();
 
-    fetch('/api/edit_order', {
+    fetch('https://yasonasser-dashboard.hf.space/api/edit_order', {
         method: 'POST', headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ order_id: parseInt(editId), items: updatedItems, total: newTotal, delivery_fee: currentEditDelivery })
     }).then(async response => {
