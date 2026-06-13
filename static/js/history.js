@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('lastAutoDownload', todayStr);
                 
                 // بنكلم الباك إند دايركت نجيب الداتا من غير ما نحتاج الجدول
-                fetch('/api/get_order_history')
+                fetch('https://yasonasser-dashboard.hf.space/api/get_order_history')
                     .then(response => response.json())
                     .then(data => {
                         // تجهيز رأس ملف الإكسيل
@@ -103,7 +103,7 @@ function checkAuth() {
 
 async function loadHistory() {
     try {
-        const response = await fetch('/api/get_order_history');
+        const response = await fetch('https://yasonasser-dashboard.hf.space/api/get_order_history');
         const data = await response.json();
         const completedOrders = data.history;
         
