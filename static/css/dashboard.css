@@ -1,0 +1,395 @@
+:root {
+    --primary: #3b82f6;        
+    --primary-hover: #2563eb;
+    --primary-text: #ffffff; 
+    --secondary: #eaedf2;      
+    --bg-body: #0d0f12;        
+    --bg-card: #161b22;        
+    --bg-input: #0d0f12;       
+    --bg-hover: rgba(255,255,255,0.05);
+    --text-main: #f0f9ff;      
+    --text-muted: #94a3b8;     
+    --border-color: #30363d;   
+    --danger-text: #f87171;
+    --danger-bg: rgba(248, 113, 113, 0.15);
+    --success-bg: rgba(34, 197, 94, 0.2);  --success-text: #4ade80;
+    --warning-bg: rgba(245, 158, 11, 0.2); --warning-text: #fbbf24;
+    --info-bg: rgba(59, 130, 246, 0.2);    --info-text: #60a5fa;
+    --confirmed-bg: rgba(139, 92, 246, 0.15);
+    --confirmed-text: #a78bfa;
+
+    --header-height: 70px;     
+    --sidebar-width: 240px; 
+}
+
+html.light-mode, body.light-mode {
+    --primary: #2563eb; --primary-hover: #1d4ed8; --primary-text: #ffffff; 
+    --secondary: #475569; --bg-body: #f0f4f8; --bg-card: #ffffff; 
+    --bg-input: #ffffff; --bg-hover: #e2e8f0; --text-main: #0f172a; 
+    --text-muted: #64748b; --border-color: #cbd5e1;   
+    --success-bg: #dcfce7; --success-text: #166534; --warning-bg: #fef3c7; 
+    --warning-text: #92400e; --danger-bg: #fee2e2; --danger-text: #b91c1c; 
+    --info-bg: #dbeafe; --info-text: #1e40af;
+    --confirmed-bg: #f3e8ff;
+    --confirmed-text: #7e22ce;
+}
+
+* { box-sizing: border-box; outline: none; margin: 0; padding: 0; }
+
+html, body {
+    font-family: 'Cairo', sans-serif; background-color: var(--bg-body);
+    color: var(--text-main); height: 100vh; overflow: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease; direction: rtl;
+}
+
+.dashboard-container { display: flex; height: 100%; width: 100%; flex-direction: row-reverse !important; }
+
+/* السايد بار */
+.sidebar { 
+    width: var(--sidebar-width); 
+    background: var(--bg-card); 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    border-right: 1px solid var(--border-color); 
+    border-left: none; 
+    transition: margin-left 0.3s ease, left 0.3s ease;
+    z-index: 1000; 
+    margin-left: 0; 
+}
+
+.sidebar.hidden { margin-left: calc(var(--sidebar-width) * -1) !important; }
+
+.sidebar-header { height: var(--header-height); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--border-color); direction: ltr !important; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand img { width: 45px; height: 45px; object-fit: contain; }
+.brand h2 { margin: 0; font-size: 1.25rem; color: var(--text-main); font-weight: 700; letter-spacing: 0.5px;}
+
+.close-sidebar-btn { display: block !important; cursor: pointer; color: var(--text-muted); font-size: 1.4rem; transition: 0.2s; }
+.close-sidebar-btn:hover { color: var(--danger-text); }
+
+.sidebar-nav { flex: 1; padding: 24px 16px; overflow-y: auto; direction: rtl; }
+.sidebar-nav ul { list-style: none; display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; }
+.nav-item { padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; border-radius: 8px; transition: 0.2s; }
+.nav-item:hover { background: var(--bg-hover); color: var(--primary); }
+.nav-item.active { background: rgba(59, 130, 246, 0.15); color: var(--primary); border-right: 4px solid var(--primary); }
+html.light-mode .nav-item.active, body.light-mode .nav-item.active { background: #eff6ff; color: var(--primary); border-right: 4px solid var(--primary); }
+
+.sidebar-footer { padding: 20px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; direction: rtl; }
+.user-profile { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 40px; height: 40px; background: var(--primary); color: var(--primary-text); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
+.info { display: flex; flex-direction: column; font-size: 0.85rem; }
+.info span { font-weight: 700; color: var(--text-main); }
+.info small { color: var(--text-muted); }
+.logout-icon { color: var(--danger-text); cursor: pointer; font-size: 1.2rem; transition: 0.2s; }
+
+.main-content { flex: 1; display: flex; flex-direction: column; width: 100%; position: relative; background: var(--bg-body); transition: 0.3s ease; }
+
+.top-header { height: var(--header-height); background: var(--bg-card); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; border-bottom: 1px solid var(--border-color); transition: 0.3s ease; flex-direction: row-reverse; }
+.header-left { display: flex; align-items: center; gap: 15px; flex-direction: row-reverse; }
+
+.menu-btn { display: block !important; background: none; border: none; font-size: 1.4rem; color: var(--text-muted); cursor: pointer; }
+.date-display { background: var(--bg-hover); padding: 6px 16px; border-radius: 20px; color: var(--primary); border: 1px solid var(--border-color); font-size: 0.85rem; font-weight: 600; }
+.content-scrollable { flex: 1; overflow-y: auto; padding: 32px; direction: rtl;}
+
+#theme-toggle { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 50%; width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+html.light-mode #theme-toggle, body.light-mode #theme-toggle { color: #f59e0b; background: #ffffff; border-color: #cbd5e1; }
+
+/* الداشبورد */
+.stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 24px; }
+.stat-card { background: var(--bg-card); padding: 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); transition: 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.stat-info span { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; }
+.stat-info h3 { margin: 2px 0 0; font-size: 1.3rem; color: var(--text-main); }
+.icon-box { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.blue { background: var(--info-bg); color: var(--info-text); }
+.purple { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+html.light-mode .purple, body.light-mode .purple { background: #f3e8ff; color: #7e22ce; }
+.green { background: var(--success-bg); color: var(--success-text); }
+.orange { background: var(--warning-bg); color: var(--warning-text); }
+.blue-light { background: var(--info-bg); color: var(--info-text); }
+
+.tabs-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+.tab-btn { padding: 8px 20px; border: 1px solid var(--border-color); background: var(--bg-card); border-radius: 25px; cursor: pointer; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; transition: 0.2s; }
+.tab-btn.active { background: var(--primary); color: var(--primary-text); box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); border-color: var(--primary); }
+.orders-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; padding-bottom: 40px; }
+.order-card { background: var(--bg-card); border-radius: 14px; padding: 15px; border: 1px solid var(--border-color); height: 420px; display: flex; flex-direction: column; transition: 0.3s ease; }
+.order-card h4 { font-size: 1.05rem; margin: 8px 0; color: var(--primary); }
+.order-items-wrapper { flex: 1; overflow-y: auto; margin: 10px 0; padding-left: 8px; font-size: 0.85rem; color: var(--text-main); }
+.order-items-wrapper::-webkit-scrollbar { width: 4px; }
+.order-items-wrapper::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+.order-actions-area { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border-color); }
+.action-btn { width: 100%; padding: 10px; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; margin-top: 6px; font-weight: 700; transition: 0.2s; }
+.confirm { background: #10b981; color: #ffffff; } 
+.pay { background: #3b82f6; color: #ffffff; }
+.badge-type { padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+.dine-badge { background: var(--info-bg); color: var(--info-text); border: 1px solid var(--info-text); }
+.take-badge { background: var(--warning-bg); color: var(--warning-text); border: 1px solid var(--warning-text); }
+.res-badge { background: rgba(167, 139, 250, 0.15); color: #8b5cf6; border: 1px solid #8b5cf6; }
+.cancel-sm-btn { background: transparent !important; border: 1px solid var(--danger-text) !important; color: var(--danger-text) !important; transition: 0.2s; }
+.cancel-sm-btn:hover { background: var(--danger-bg) !important; }
+
+/* المودال */
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 2000; direction: rtl; }
+.modal-content { background: var(--bg-card); padding: 24px; border-radius: 16px; width: 90%; max-width: 420px; border: 1px solid var(--border-color); }
+.modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+.confirm-btn { flex: 2; background-color: var(--primary); color: var(--primary-text); border: none; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+.cancel-btn { flex: 1; background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+.cancel-btn:hover { background-color: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-text); }
+
+
+/* =========================================
+   الريسبونسيف (Responsive Media Queries) 
+   ========================================= */
+
+@media (max-width: 1200px) { 
+    .stats-row { grid-template-columns: repeat(3, 1fr); } 
+}
+
+@media (max-width: 992px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stats-row .stat-card:last-child { grid-column: span 2; }
+}
+
+@media (max-width: 768px) {
+    .sidebar { 
+        position: fixed; 
+        left: -100%; 
+        top: 0; 
+        border-right: 1px solid var(--border-color); 
+        border-left: none; 
+        box-shadow: 10px 0 20px rgba(0,0,0,0.5);
+        z-index: 9999; 
+    }
+    .sidebar.active { left: 0; margin-left: 0 !important; }
+    
+    .top-header { padding: 0 15px; }
+    .content-scrollable { padding: 15px; }
+    
+    .stats-row { gap: 10px; }
+    .orders-grid { grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); }
+    .order-card { height: auto; min-height: 400px; }
+    
+    .brand h2 { font-size: 1.1rem; }
+}
+
+@media (max-width: 480px) { 
+    .stats-row { grid-template-columns: 1fr; } 
+    .stats-row .stat-card:last-child { grid-column: span 1; } 
+    
+    .date-display { display: none; } 
+    
+    .tabs-nav { flex-wrap: wrap; justify-content: center; }
+    .tab-btn { flex: 1; min-width: 140px; text-align: center; }
+    
+    .modal-content { padding: 15px; width: 95%; }
+    .modal-actions { flex-direction: column; gap: 8px; }
+    .confirm-btn, .cancel-btn { width: 100%; flex: none; }
+}
+/* =========================================
+   تأثير التدرج (Gradient) للزراير والتابس فقط
+   ========================================= */
+
+:root {
+    /* تم توحيد التدرجات للون الأزرق الأساسي */
+    --mint-gradient: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    --mint-gradient-hover: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+}
+
+/* 1. التدرج للتاب النشط (Active Orders) */
+.tab-btn.active {
+    background: var(--mint-gradient) !important;
+    color: #FFFFFF !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* 2. التدرج لزراير التأكيد (Confirm Order / Mark Ready / Pay) */
+.action-btn.confirm,
+.action-btn.pay,
+.confirm-btn {
+    background: var(--mint-gradient) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+}
+
+/* تأثير لما الماوس ييجي على الزراير */
+.action-btn.confirm:hover,
+.action-btn.pay:hover,
+.confirm-btn:hover {
+    background: var(--mint-gradient-hover) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* 3. تظبيط التاب النشط في القائمة الجانبية (عشان يليق مع التدريجة الزرقاء) */
+.sidebar-nav .nav-item.active {
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: #3b82f6 !important;
+    border-right: 4px solid #3b82f6 !important;
+}
+
+/* تعديل تدرج خلفية الكارت (Order Card Background) ليميل للأزرق الغامق */
+:root {
+    /* تدرج احترافي يبدأ من أزرق ليلي غامق وينتهي بأسود رمادي */
+    --card-gradient: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+}
+
+.order-card {
+    background: var(--card-gradient) !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* تأثير خفيف عند تمرير الماوس فوق الكارت لزيادة التفاعل */
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6) !important;
+    border-color: #3b82f6 !important; /* تفتيح الحدود باللون الأزرق عند الهوفر */
+}
+
+/* =========================================
+   تطبيق التدرج على بوكسات الإحصائيات (Stat Cards)
+   ========================================= */
+
+.stat-card {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%) !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* تأثير خفيف وشيك لما الماوس ييجي على البوكس */
+.stat-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
+    border-color: #3b82f6 !important;
+}
+
+/* =========================================
+   تلوين أزرار الحالات (سبتلك الدلالات زي ما هي عشان متلخبطش الكاشير بس ظبطت الـ Tone)
+   ========================================= */
+
+/* =========================================
+   تلوين أزرار الحالات (بنفس لون الحالة اللي هيروح لها)
+   ========================================= */
+
+/* =========================================
+   تلوين أزرار الحالات (المنطق الديناميكي: من حالة -> إلى حالة)
+   ========================================= */
+
+/* [متغيرات داخلية للتدرجات] لتسهيل التعديل */
+:root {
+    --gradient-new: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);        /* أزرق (جديد) */
+    --gradient-confirmed: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);  /* بنفسجي (مؤكد) */
+    --gradient-preparing: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);  /* برتقالي (جاري التحضير) */
+    --gradient-ready: linear-gradient(135deg, #4ade80 0%, #166534 100%);      /* أخضر (جاهز) */
+    --gradient-payment: linear-gradient(135deg, #1e40af 0%, #0c1c4e 100%);    /* أزرق غامق للدفع */
+    --gradient-completed: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);  /* أزرق فاتح مكتمل */
+}
+
+/* =========================================
+   تلوين أزرار الحالات (تغيير اللون بمجرد الوقوف بالماوس - Hover)
+   ========================================= */
+
+/* [متغيرات داخلية للتدرجات] */
+:root {
+    --gradient-new: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);        /* أزرق (جديد) */
+    --gradient-confirmed: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);  /* بنفسجي (مؤكد) */
+    --gradient-preparing: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);  /* برتقالي (جاري التحضير) */
+    --gradient-ready: linear-gradient(135deg, #4ade80 0%, #166534 100%);      /* أخضر (جاهز) */
+    --gradient-payment: linear-gradient(135deg, #1e40af 0%, #0c1c4e 100%);    /* أزرق غامق للدفع */
+    --gradient-completed: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);  /* أزرق فاتح مكتمل */
+}
+
+/* 1. زر تأكيد الطلب (NEW -> CONFIRMED) */
+.action-btn.confirm {
+    background: var(--gradient-new) !important; /* لون الزرار العادي: أزرق */
+    color: #FFFFFF !important; border: none !important; transition: all 0.3s ease !important;
+}
+.action-btn.confirm:hover {
+    background: var(--gradient-confirmed) !important; /* لما تقفي عليه: بنفسجي */
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(167, 139, 250, 0.4) !important;
+}
+
+/* 2. زر الذهاب للمطبخ (CONFIRMED -> PREPARING) */
+.action-btn.pay[style*="info-text"] {
+    background: var(--gradient-confirmed) !important; /* لون الزرار العادي: بنفسجي */
+    color: #FFFFFF !important; border: none !important; transition: all 0.3s ease !important;
+}
+.action-btn.pay[style*="info-text"]:hover {
+    background: var(--gradient-preparing) !important; /* لما تقفي عليه: برتقالي */
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4) !important;
+}
+
+/* 3. زر جاهز للتسليم (PREPARING -> READY) */
+.action-btn.pay[style*="success-text"] {
+    background: var(--gradient-preparing) !important; /* لون الزرار العادي: برتقالي */
+    color: #FFFFFF !important; border: none !important; transition: all 0.3s ease !important;
+}
+.action-btn.pay[style*="success-text"]:hover {
+    background: var(--gradient-ready) !important; /* لما تقفي عليه: أخضر */
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(74, 222, 128, 0.4) !important;
+}
+
+/* 4. زر الإرسال للدفع (READY -> Pending Payment) */
+.action-btn.pay[style*="primary"] {
+    background: var(--gradient-ready) !important; /* لون الزرار العادي: أخضر */
+    color: #FFFFFF !important; border: none !important; transition: all 0.3s ease !important;
+}
+.action-btn.pay[style*="primary"]:hover {
+    background: var(--gradient-payment) !important; /* لما تقفي عليه: أزرق غامق */
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(30, 64, 175, 0.4) !important;
+}
+
+/* 5. زر إتمام الدفع (PENDING PAYMENT -> Completed) داخل المودال */
+.confirm-btn {
+    background: var(--gradient-payment) !important; /* لون الزرار العادي: أزرق غامق */
+    color: #FFFFFF !important; border: none !important; transition: all 0.3s ease !important;
+}
+.confirm-btn:hover {
+    background: var(--gradient-completed) !important; /* لما تقفي عليه: أزرق فاتح */
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(96, 165, 250, 0.4) !important;
+}
+/* =========================================
+   تصليح اللايت مود (Light Mode Card Fixes)
+   ========================================= */
+
+/* 1. تعريف التدرج والحدود للدارك مود (الأساسي) */
+:root {
+    --card-gradient: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    --dynamic-border: #334155;
+}
+
+/* 2. تعريف التدرج والحدود للايت مود (مدرج ملحوظ زي الدارك) */
+/* 2. تعريف التدرج والحدود للايت مود (مدرج ملحوظ أكتر) */
+html.light-mode, body.light-mode {
+    /* أغمقنا الدرجة التانية في التدرج عشان الكارت يبان بارز أكتر */
+    --card-gradient: linear-gradient(145deg, #ffffff 0%, #cbd5e1 100%);
+    --dynamic-border: #94a3b8; /* غمقنا الحدود درجة بسيطة عشان تليق مع التدريجة */
+}
+
+/* 3. تطبيق المتغيرات الديناميكية على كل الكروت */
+.order-card, .stat-card, .table-wrapper, .card, .table-modal-content {
+    background: var(--card-gradient) !important;
+    border: 1px solid var(--dynamic-border) !important;
+}
+
+/* تصليح لون التوهج (Box Shadow) في اللايت مود عشان ميبقاش أسود غامق */
+html.light-mode .order-card,
+html.light-mode .stat-card,
+html.light-mode .table-wrapper {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light-mode .order-card:hover,
+html.light-mode .stat-card:hover {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15) !important;
+}

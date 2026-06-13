@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Status - AKLTECH</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tables.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        if (localStorage.getItem('theme') === 'light') { document.documentElement.classList.add('light-mode'); }
+    </script>
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-xmark close-sidebar-btn" onclick="toggleSidebar()"></i>
+                <div class="brand">
+                    <h2>AKLTECH</h2>
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item" onclick="goToDashboard()"><i class="fa-solid fa-house"></i> <span>Dashboard</span></li>
+                    <li class="nav-item" onclick="goToPayment()"><i class="fa-solid fa-credit-card"></i> <span>Payment</span></li>
+                    <li class="nav-item active" id="nav-tables"><i class="fa-solid fa-table-cells-large"></i> <span>Table Status</span></li>
+                    <li class="nav-item" onclick="window.location.href='/history'"><i class="fa-solid fa-clock-rotate-left"></i> <span>History Log</span></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">{{ real_name[0].upper() if real_name else 'C' }}</div>
+                    <div class="info">
+                        <span style="font-weight: 600; color: var(--text-main);">{{ real_name }}</span>
+                        <small style="color: var(--text-muted);">Cashier Dashboard</small>
+                    </div>
+                </div>
+                <i class="fa-solid fa-right-from-bracket logout-icon" onclick="window.location.href='/logout'"></i>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                    <h2 style="color: var(--text-main); margin: 0; font-size: 1.2rem;">Tables & Reservations</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="date-display" id="current-date">{{ current_date }}</div>
+                    <button id="theme-toggle"><i class="fas fa-sun" id="theme-icon"></i></button>
+                </div>
+            </header>
+            
+            <div class="content-scrollable">
+                
+                <div class="card map-card" style="direction: ltr;">
+                    <div class="card-header" style="flex-direction: row;">
+                        <h3><i class="fa-solid fa-border-all"></i> Tables Floor Plan</h3>
+                    </div>
+                    <div class="tables-map" id="tables-map">
+                        </div>
+                </div>
+
+                <div class="card table-card mt-4" style="direction: ltr;">
+                    <div class="card-header table-header" style="flex-direction: row;">
+                        <h3><i class="fa-solid fa-list-check"></i> Reservations List</h3>
+                        <div class="filter-group">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="res-search" placeholder="Search Name, Phone, ID..." />
+                            </div>
+                            
+                            <div style="display: flex; gap: 5px; align-items: center; direction: ltr;">
+                                <input type="date" id="res-start-date" class="input-field select-filter" title="Start Date">
+                                <span style="color: var(--text-muted); font-size: 0.9rem;">To</span>
+                                <input type="date" id="res-end-date" class="input-field select-filter" title="End Date">
+                            </div>
+                            
+                            <select id="res-range" class="input-field select-filter">
+                                <option value="today">Today</option>
+                                <option value="next_week">Next 7 Days</option>
+                                <option value="next_month">Next 30 Days</option>
+                                <option value="all">All Time</option>
+                                <option value="cancelled">Cancelled Bookings</option>
+                            </select>
+
+                            <select id="res-history" class="input-field select-filter">
+                                <option value="upcoming">Upcoming</option>
+                                <option value="past">Past / History</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table" id="reservations-table">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" data-sort="id">Res ID <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="customer">Customer <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="table">Table <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="time">Time <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="guests">Guests <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="status">Status <i class="fa-solid fa-sort"></i></th>
+                                    <th style="width: 50px;"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="table-modal" class="modal" style="direction: ltr;">
+        <div class="modal-content table-modal-content">
+            <div class="modal-header">
+                <h2 id="modal-table-title" style="flex-direction: row;"><i class="fa-solid fa-utensils"></i> Table Details</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="table-reservations-list" class="res-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tableStatusModal" class="modal" style="direction: ltr;">
+        <div class="modal-content" style="max-width: 380px;">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; color:var(--text-main);">Update Table: <span id="targetTableName" style="color:var(--primary)"></span></h3>
+                <span class="close-modal" onclick="closeTableModal()" style="cursor:pointer; font-size:1.5rem; color:var(--text-muted);">&times;</span>
+            </div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 10px; padding: 20px 0;">
+                <button class="action-btn avail" onclick="changeTableStatus('Available')">Available</button>
+                <button class="action-btn reser" onclick="changeTableStatus('Reserved')">Reserved</button>
+                <button class="action-btn occup" onclick="changeTableStatus('Occupied')">Occupied</button>
+            </div>
+            <button class="cancel-btn" onclick="closeTableModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/tables.js') }}"></script>
+    <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('hidden'); }
+        function goToDashboard() { window.location.href = '/dashboard'; }
+        function goToPayment() { localStorage.setItem('openPaymentTab', 'true'); window.location.href = '/dashboard'; }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            if (localStorage.getItem('theme') === 'light' && themeIcon) { themeIcon.classList.replace('fa-sun', 'fa-moon'); }
+            if(themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    document.documentElement.classList.toggle('light-mode');
+                    if (document.documentElement.classList.contains('light-mode')) {
+                        localStorage.setItem('theme', 'light');
+                        themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    } else {
+                        localStorage.setItem('theme', 'dark');
+                        themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    }
+                });
+            }
+            const options = { weekday: 'short', month: 'short', day: 'numeric' };
+            const dateEl = document.getElementById('current-date');
+            if (dateEl && !dateEl.innerText.trim()) dateEl.innerText = new Date().toLocaleDateString('en-US', options);
+        });
+    </script>
+</body>
+</html>

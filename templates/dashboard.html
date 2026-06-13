@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashier Dashboard - AKLTECH</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        /* 🌟 تم تعديل السطر ده عشان يمنع رعشة الدارك مود 🌟 */
+        if (localStorage.getItem('theme') === 'light') { document.documentElement.classList.add('light-mode'); }
+    </script>
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header" style="direction: ltr;">
+                <i class="fa-solid fa-xmark close-sidebar-btn" onclick="toggleSidebar()"></i>
+                <div class="brand">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+                    <h2>AKLTECH</h2>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item" id="nav-dashboard" onclick="switchTab('active')">
+                        <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+                    </li>
+                    <li class="nav-item" id="nav-payment" onclick="switchTab('payment')">
+                        <i class="fa-solid fa-credit-card"></i> <span>Payment</span>
+                    </li>
+                    <li class="nav-item" onclick="window.location.href='/table-status'">
+                        <i class="fa-solid fa-table-cells-large"></i> <span>Table Status</span>
+                    </li>
+                    <li class="nav-item" onclick="window.location.href='/history'">
+                        <i class="fa-solid fa-clock-rotate-left"></i> <span>History Log</span>
+                    </li>
+                </ul>
+            </nav>
+            
+            <script>
+                if(localStorage.getItem('openPaymentTab') === 'true') {
+                    document.getElementById('nav-payment').classList.add('active');
+                } else {
+                    document.getElementById('nav-dashboard').classList.add('active');
+                }
+            </script>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">{{ real_name[0].upper() if real_name else 'C' }}</div>
+                    <div class="info">
+                        <span id="user-name-display" style="font-weight: 600; color: var(--text-main);">{{ real_name }}</span>
+                        <small style="color: var(--text-muted);">Cashier Dashboard</small>
+                    </div>
+                </div>
+                <i class="fa-solid fa-right-from-bracket logout-icon" onclick="window.location.href='/logout'"></i>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                    <h2 id="page-title" style="color: var(--text-main); margin: 0; font-size: 1.2rem;">Dashboard Overview</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="date-display" id="current-date">{{ current_date }}</div>
+                    <button id="theme-toggle"><i class="fas fa-sun" id="theme-icon"></i></button>
+                </div>
+            </header>
+
+            {% with messages = get_flashed_messages(category_filter=["success"]) %}
+  {% if messages %}
+    {% for message in messages %}
+      <div id="welcome-alert" style="background: var(--info-bg); border: 1px solid var(--info-text); color: var(--info-text); padding: 15px 25px; border-radius: 12px; margin: 20px; display: flex; align-items: center; gap: 15px; animation: slideIn 0.5s ease-out;">
+        <i class="fa-solid fa-circle-check" style="font-size: 1.2rem;"></i>
+        <span style="font-weight: 600;">{{ message }}</span>
+      </div>
+      <script>
+        setTimeout(() => {
+            const alert = document.getElementById('welcome-alert');
+            if(alert) { alert.style.transition = "opacity 0.5s ease"; alert.style.opacity = "0"; setTimeout(() => alert.remove(), 500); }
+        }, 4000);
+      </script>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+            <div class="content-scrollable">
+                <div class="stats-row">
+                    <div class="stat-card"><div class="stat-info"><span style="color: var(--text-muted);">Active Orders</span><h3 id="count-new">0</h3></div><div class="icon-box blue" style="background: var(--info-bg); color: var(--info-text);"><i class="fa-solid fa-bell"></i></div></div>
+                    <div class="stat-card"><div class="stat-info"><span style="color: var(--text-muted);">Preparing</span><h3 id="count-preparing">0</h3></div><div class="icon-box purple" style="background: var(--warning-bg); color: var(--warning-text);"><i class="fa-solid fa-hourglass-half"></i></div></div>
+                    <div class="stat-card"><div class="stat-info"><span style="color: var(--text-muted);">Ready</span><h3 id="count-ready">0</h3></div><div class="icon-box green" style="background: var(--success-bg); color: var(--success-text);"><i class="fa-solid fa-check"></i></div></div>
+                    <div class="stat-card"><div class="stat-info"><span style="color: var(--text-muted);">Payment</span><h3 id="count-payment">0</h3></div><div class="icon-box orange" style="background: var(--danger-bg); color: var(--danger-text);"><i class="fa-solid fa-cash-register"></i></div></div>
+                    <div class="stat-card"><div class="stat-info"><span style="color: var(--text-muted);">Completed</span><h3 id="count-completed">0</h3></div><div class="icon-box blue-light" style="background: var(--info-bg); color: var(--info-text);"><i class="fa-solid fa-chart-line"></i></div></div>
+                </div>
+
+                <div class="tabs-nav">
+                    <button id="tab-btn-active" class="tab-btn" onclick="switchTab('active')">Active Orders</button>
+                    <button id="tab-btn-payment" class="tab-btn" onclick="switchTab('payment')">Pending Payment</button>
+                </div>
+                
+                <script>
+                    if(localStorage.getItem('openPaymentTab') === 'true') {
+                        document.getElementById('tab-btn-payment').classList.add('active');
+                        document.getElementById('page-title').innerText = "Pending Payments";
+                    } else {
+                        document.getElementById('tab-btn-active').classList.add('active');
+                    }
+                </script>
+
+                <div id="orders-container" class="orders-grid"></div>
+            </div>
+        </main>
+    </div>
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="color: var(--text-main); margin:0;">Process Payment <span id="modalOrderId" style="color:var(--primary)">...</span></h3>
+                <span class="close-modal" onclick="closePaymentModal()" style="cursor:pointer; font-size:1.5rem; color:var(--text-muted);">&times;</span>
+            </div>
+            <div class="payment-details-body" style="margin-top:15px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; background:var(--bg-body); padding:10px; border-radius:8px; border: 1px solid var(--border-color);">
+                    <span style="color:var(--text-muted)">Customer</span>
+                    <strong id="modalCustomerName" style="color:var(--text-main)">...</strong>
+                </div>
+                <div id="modalItemsContainer" style="max-height:150px; overflow-y:auto; margin-bottom:10px; color:var(--text-main);"></div>
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background:var(--bg-body); padding:10px; border-radius:8px; border: 1px dashed var(--warning-text);">
+                    <span style="color:var(--text-main); font-weight:bold;"><i class="fa-solid fa-tag" style="color:var(--warning-text);"></i> Discount (%)</span>
+                    <input type="number" id="paymentDiscountInput" value="0" min="0" max="100" oninput="updatePaymentTotal()" style="width:80px; text-align:center; padding:6px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-main); font-family:'Cairo'; font-weight:bold;">
+                </div>
+
+                <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; border-top:2px dashed var(--border-color); padding-top:15px; color:var(--text-main);">
+                    <span>Total Amount</span>
+                    <span id="modalTotalAmount" style="color:var(--primary)">0 EGP</span>
+                </div>
+            </div>
+            <p style="margin:20px 0 10px; font-weight:bold; font-size:0.9rem; color:var(--text-muted)">Client's Payment Method</p>
+            <div id="clientPaymentMethodDisplay" style="padding:15px; border-radius:10px; background:var(--info-bg); color:var(--info-text); font-weight:bold; text-align:center; border: 1px solid var(--border-color);">...</div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closePaymentModal()">Cancel</button>
+                <button class="confirm-btn" id="confirmPaymentBtn">Confirm Payment</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="color: var(--text-main); margin:0;">Confirm Order <span id="confirmModalOrderId" style="color:var(--primary)">...</span></h3>
+                <span class="close-modal" onclick="closeConfirmModal()" style="cursor:pointer; font-size:1.5rem; color:var(--text-muted);">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 15px 0;">
+                <p style="margin-bottom: 10px; font-weight: bold; color: var(--text-main);">Preparation Time (minutes):</p>
+                <input type="number" id="prepTimeInput" min="1" value="15" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; text-align: center; background: var(--bg-input); color: var(--text-main);">
+            </div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeConfirmModal()">Cancel</button>
+                <button class="confirm-btn" onclick="processConfirmation()">Confirm & Print</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="color: var(--text-main); margin:0;">Edit Order Items <span id="editModalOrderId" style="color:var(--danger-text)">...</span></h3>
+                <span class="close-modal" onclick="closeEditModal()" style="cursor:pointer; font-size:1.5rem; color:var(--text-muted);">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 15px 0;">
+                <p style="margin-bottom: 10px; font-weight: bold; color: var(--text-main);">Customer: <span id="editCustomerNameDisplay" style="color:var(--primary);">...</span></p>
+                <div id="editItemsContainer" style="max-height: 250px; overflow-y: auto; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px;"></div>
+                <div style="font-weight:bold; font-size:1.2rem; color:var(--text-main); text-align:right; border-top: 1px dashed var(--border-color); padding-top:10px;">
+                    Total: <span id="editDynamicTotal" style="color:var(--primary)">0 EGP</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+                <button class="confirm-btn" style="background:var(--info-text); color:#fff;" onclick="saveOrderEdit()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

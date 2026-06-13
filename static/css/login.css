@@ -1,0 +1,304 @@
+/* =========================================
+   ثيم الألوان (AKLTECH Dual-Tone)
+========================================= */
+:root {
+    --primary: #3b82f6;        
+    --primary-text: #ffffff; 
+    --bg-body: #0d0f12;        
+    --bg-card: #161b22;
+    --bg-input: #0d0f12;       
+    --text-main: #f0f9ff;      
+    --text-muted: #94a3b8;     
+    --border-color: #30363d;   
+    --danger-text: #f87171;
+    --danger-bg: rgba(248, 113, 113, 0.15);
+    --card-gradient: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    --dynamic-border: #334155;
+    
+    --mint-gradient: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
+    --mint-gradient-hover: linear-gradient(135deg, #1e40af 0%, #5b21b6 100%);
+    --focus-border: #4f46e5; 
+    --focus-glow: rgba(79, 70, 229, 0.2); 
+}
+
+html.light-mode, body.light-mode {
+    --bg-body: #f0f4f8; 
+    --bg-card: #ffffff;
+    --bg-input: #ffffff; 
+    --text-main: #0f172a; 
+    --text-muted: #64748b; 
+    --border-color: #cbd5e1;   
+    --danger-bg: #fee2e2; 
+    --danger-text: #b91c1c; 
+    --card-gradient: linear-gradient(145deg, #ffffff 0%, #cbd5e1 100%);
+    --dynamic-border: #94a3b8;
+    
+    --mint-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    --mint-gradient-hover: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    --focus-border: #8b5cf6; 
+    --focus-glow: rgba(139, 92, 246, 0.15); 
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Cairo', sans-serif; }
+
+/* التعديل هنا: تسريع استجابة الخلفية والنصوص كلها في نفس الوقت */
+body { 
+    background-color: var(--bg-body); 
+    color: var(--text-main); 
+    height: 100vh; 
+    overflow: hidden; 
+    position: relative; 
+    transition: background-color 0.2s ease, color 0.2s ease; 
+}
+
+/* --- زرار الثيم --- */
+.theme-btn {
+    position: absolute; top: 24px; right: 24px; z-index: 100;
+    background: transparent; border: 1px solid var(--border-color);
+    color: var(--text-muted); border-radius: 12px; width: 45px; height: 45px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; 
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+.theme-btn:hover { background: var(--bg-input); color: var(--focus-border); border-color: var(--focus-border); }
+
+/* --- الأشكال المتحركة في الخلفية --- */
+.bg-shapes { position: absolute; inset: 0; overflow: hidden; z-index: 0; opacity: 0.4; pointer-events: none; transition: opacity 0.2s; }
+.shape { position: absolute; filter: blur(70px); border-radius: 50%; animation: float 15s infinite ease-in-out alternate; }
+.shape-1 { width: 400px; height: 400px; background: rgba(59, 130, 246, 0.15); top: -10%; left: -10%; }
+.shape-2 { width: 500px; height: 500px; background: rgba(139, 92, 246, 0.1); bottom: -20%; right: -10%; animation-delay: -5s; }
+@keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(40px, 40px) scale(1.05); } }
+
+/* =========================================
+   1. شاشة الترحيب (Cinematic Curtain)
+========================================= */
+.welcome-curtain {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg-body);
+    display: flex; justify-content: center; align-items: center;
+    transition: transform 0.85s cubic-bezier(0.85, 0, 0.15, 1), background-color 0.2s ease; 
+}
+
+.welcome-curtain.slide-up {
+    transform: translateY(-100%);
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+.welcome-content { text-align: center; }
+.logo-glow {
+
+    width: 160px; /* كبرنا المربع المضيء */
+
+    height: 160px; 
+
+    margin: 0 auto 25px;
+
+    background: var(--bg-card); 
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 40px; /* زودنا التدويرة عشان تليق مع الحجم الجديد */
+
+    display: flex; 
+
+    justify-content: center; 
+
+    align-items: center;
+
+    box-shadow: 0 0 35px var(--focus-glow);
+
+}
+
+
+
+.logo-glow img { 
+
+    width: 150px; /* كبرنا اللوجو نفسه جوه المربع */
+
+    height: 150px; 
+
+    object-fit: contain; 
+
+    filter: drop-shadow(0px 5px 8px rgba(0, 0, 0, 0.4)); /* ظل فخم عشان يبرز اللون الدهبي والكحلي */
+
+}
+.welcome-content h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: 2px; color: var(--text-main); margin-bottom: 5px; transition: color 0.2s;}
+.welcome-content p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; font-weight: 600; transition: color 0.2s;}
+
+.btn-premium {
+    background: var(--mint-gradient); color: #fff; border: none;
+    padding: 16px 40px; font-size: 1.15rem; font-weight: 700; border-radius: 50px;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 12px;
+    box-shadow: 0 10px 25px var(--focus-glow); transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.btn-premium:hover { transform: translateY(-3px); box-shadow: 0 15px 35px var(--focus-glow); }
+
+/* =========================================
+   2. الشاشة الأساسية (Main Layout)
+========================================= */
+.main-layout { display: flex; height: 100vh; width: 100%; position: relative; z-index: 10; }
+
+.layout-left {
+    flex: 1.3;
+    background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+    position: relative; 
+    display: flex; align-items: flex-end; justify-content: flex-start; padding: 60px;
+}
+.layout-left::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(13, 15, 18, 0.95) 0%, rgba(13, 15, 18, 0.1) 60%);
+}
+
+.hero-content { position: relative; z-index: 10; text-align: left; max-width: 500px;}
+.brand-badge {
+    display: inline-block; background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
+    color: #fff; padding: 6px 14px; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 15px;
+}
+.hero-content h2 { font-size: 2.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; line-height: 1.2;}
+.hero-content p { font-size: 1.1rem; color: #cbd5e1; font-weight: 600;}
+
+.layout-right {
+    flex: 1; display: flex; justify-content: center; align-items: center;
+}
+
+/* =========================================
+   تأثير الزجاج المصنفر (Glassmorphism) للكارت
+========================================= */
+.login-container {
+    width: 100%; max-width: 440px; padding: 45px;
+    background: rgba(30, 41, 59, 0.45);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    border-radius: 24px;
+    opacity: 0; transform: translateY(30px); 
+    
+    /* الحل الجذري للبطء: فصلنا حركة الدخول عن تغيير الألوان */
+    transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+html.light-mode .login-container {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+}
+
+.login-container.show { opacity: 1; transform: translateY(0); }
+
+/* =========================================
+   علامة حالة النظام (System Status Pulse)
+========================================= */
+.system-status {
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    font-size: 0.8rem; color: var(--text-muted); font-weight: 600;
+    margin-bottom: 25px; transition: color 0.2s;
+}
+.version-tag { background: var(--bg-body); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; border: 1px solid var(--border-color); transition: background-color 0.2s, border-color 0.2s;}
+
+.pulse-dot {
+    width: 8px; height: 8px; background: #10b981; border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.form-header { margin-bottom: 35px; }
+.form-header h2 { font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; transition: color 0.2s;}
+.form-header p { color: var(--text-muted); font-size: 0.95rem; font-weight: 600; transition: color 0.2s;}
+
+/* =========================================
+   تأثير الحقول العائمة (Floating Labels)
+========================================= */
+.input-box { position: relative; margin-bottom: 25px; }
+
+.input-icon {
+    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 1.2rem; z-index: 5;
+    transition: color 0.2s ease;
+}
+
+.input-box input {
+    width: 100%; padding: 24px 45px 10px 50px; 
+    background: var(--bg-input);
+    border: 2px solid var(--border-color); border-radius: 12px;
+    color: var(--text-main); font-size: 1rem; font-weight: 700;
+    /* فصلنا الألوان عن باقي الخواص */
+    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+.input-box label {
+    position: absolute; left: 50px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 0.95rem; font-weight: 600;
+    pointer-events: none; z-index: 5;
+    transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), font-size 0.3s, color 0.2s;
+}
+
+.input-box input:focus, .input-box input:not(:placeholder-shown) {
+    border-color: var(--focus-border); background: transparent;
+    box-shadow: 0 4px 20px var(--focus-glow);
+}
+
+.input-box input:focus ~ .input-icon, .input-box input:not(:placeholder-shown) ~ .input-icon { color: var(--focus-border); }
+
+.input-box input:focus ~ label, .input-box input:not(:placeholder-shown) ~ label {
+    top: 14px; font-size: 0.75rem; color: var(--focus-border); letter-spacing: 0.5px;
+}
+
+#togglePassword {
+    position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); cursor: pointer; font-size: 1.1rem; z-index: 5;
+    transition: color 0.2s;
+}
+#togglePassword:hover { color: var(--focus-border); }
+/* إخفاء علامة العين الافتراضية بتاعت المتصفح (زي Microsoft Edge) */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* =========================================
+   الزراير والفوتر (Trust Signals)
+========================================= */
+.btn-submit {
+    width: 100%; padding: 16px; margin-top: 10px;
+    background: var(--mint-gradient); color: #fff; border: none; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 800; cursor: pointer;
+    display: flex; justify-content: center; align-items: center; gap: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 10px 20px var(--focus-glow);
+}
+.btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 30px var(--focus-glow); }
+
+.form-footer { margin-top: 30px; text-align: center; }
+
+.security-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.75rem; color: #10b981; font-weight: 700;
+    background: rgba(16, 185, 129, 0.1); padding: 8px 16px;
+    border-radius: 20px; margin-bottom: 15px; border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.form-footer p { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; transition: color 0.2s; }
+
+.alert-box {
+    background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-text);
+    padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 700;
+    margin-bottom: 25px; display: flex; align-items: center; gap: 10px;
+}
+
+@media (max-width: 900px) {
+    .main-layout { flex-direction: column; }
+    .layout-left { display: none; }
+    .layout-right { padding: 20px; }
+    .welcome-content h1 { font-size: 2.5rem; }
+    .login-container { padding: 30px; }
+}
