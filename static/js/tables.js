@@ -1,4 +1,4 @@
-const API = "/api"; 
+const API = "https://yasonasser-dashboard.hf.space/api"; 
 let globalReservations = []; 
 let currentSort = { column: null, direction: 'asc' };
 let tablesData = [];
